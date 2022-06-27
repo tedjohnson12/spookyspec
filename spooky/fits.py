@@ -34,7 +34,8 @@ def get_image_data(filename,order):
     
     Returns
         l (np.array): wavelength points
-        f (np.array): flux points    """
+        f (np.array): flux points
+        """
     hdu = fits.open(filename)[0] #first from hdulist object
     
     #get parameters from hdr

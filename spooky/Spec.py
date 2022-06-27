@@ -10,12 +10,23 @@ from .fits import read_two_column
 from scipy.interpolate import interp1d
 
 class Spec:
-    """
-    class containing 1D spectral data
+    """Store 1D spectral data
+
     This class was designed to be easy to use, especially to create figures
     spectra are transformed by appending class methods to the variable. For example,
     to redshift a spectrum spec by 10 km/s, call spec.dopshift(10)
-    self.show() returns the axes as astropy.Quantity objects
+    self.show() returns the axes as astropy.Quantity objects.
+
+    Args:
+        l (np.array): wavelength points
+        f (np.array): flux points
+
+    Keyword Args:
+        u_l (str): unit of wavelength axis. Should be readable by astropy.units.Unit(). Default `'Angstrom'`
+        u_f (str): unit of flux axis. Should be readable by astropy.units.Unit(). Default `'erg cm-2 s-1 Angstrom-1'`
+        stype (str): type of information stored. Either `'data'` or `'model'`. This is important for finding the continuum
+        and normalization. Default `'data'`
+        hdr (astropy.io.fits.header.Header): Fits header to be stored with the spectrum. Default `None`
     """
     def __init__(self,l,f,**kwargs):
         self.l = l
@@ -27,23 +38,57 @@ class Spec:
         if self.stype not in ['model','data']:
             raise ValueError('stype must be \'model\' or \'data\'')
     def show(self):
-        """
-        return axes as quantity objects
+        """Show spectrum
+
+        Return wavelength and flux so spectrum can be plotted or otherwise used
+
+        Args:
+            None
+        
+        Returns:
+            (astropy.Quantity array-like): wavelengths
+            (astropy.Quantity array-like): fluxes
         """
         return self.l * self.u_l, self.f * self.u_f
     def __str__(self):
+        """String descriptor
+        
+        Get a string describing the spectrum
+
+        Args:
+            None
+        
+        Returns:
+            (str): short description of spectrum
+        """
         s = 'Spec %s from %.3f to %.3f %s' % (self.stype,self.l.min(),self.l.max(),str(self.u_l))
         return s
     def scale(self,k):
-        """
-        scale spectrum, preserving EW
+        """Scale spectrum
+
+        Multiply flux by a scaler, preserving equivalent width.
+
+        Args:
+            k (float): scale factor
+        
+        Returns:
+            (Spec): new spectrum
         """
         new_spec = deepcopy(self)
         new_spec.f = self.f * k
         return new_spec
     def new_units(**kwargs):
-        """
-        change units in either axis
+        """Change unit keyword
+        Change the units stored in `self.u_l` and/or `self.u_f`. Does not change the arrays that store data.
+        This is for fixing mistakes and other data management actions. To cast your data to another unit,
+        please use `astropy.units.to()`.
+        
+        Args:
+            None
+        
+        Keyword Args:
+            u_l (str): new unit of wavelength axis. Should be readable by astropy.units.Unit().
+            u_f (str): new unit of flux axis. Should be readable by astropy.units.Unit().
         """
         new_spec = deepcopy(self)
         if 'u_l' in kwargs:
