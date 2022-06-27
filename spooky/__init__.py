@@ -1,3 +1,5 @@
+__version__ = '1.0.0'
+
 from .fits import fits_to_np
 from .fits import read_two_column
 from .fits import get_image_data
