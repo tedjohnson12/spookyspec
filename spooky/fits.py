@@ -4,12 +4,15 @@ from pandas import read_csv
 from astropy import units as u
 
 def fits_to_np(spec):
-    """
+    """Convert from fits to numpy
     Convert a file from fits format to two numpy arrays.
     
-    spec is a string that contains the filename
-    
-    returns lambda, flux
+    Args:
+        spec (str): path to .fits file containing data
+
+    Returns:
+        lambda (np.array): wavelength points
+        flux (np.array): flux points
     """
     f = fits.getdata(spec)
     h = fits.getheader(spec)
@@ -20,9 +23,18 @@ def fits_to_np(spec):
 
 
 def get_image_data(filename,order):
-    """
-    return two np arrays of data from a single order of a multispec fits file
-    """
+    """Get an order from a multispec fits file
+
+    Get the information from a single order in a fits file containing multiple orders
+    of data (e.g. from an echelle spectrograph)
+
+    Args:
+        filename (str): Path to the .fits file containing the data
+        order (int): echelle order to pull data from
+    
+    Returns
+        l (np.array): wavelength points
+        f (np.array): flux points    """
     hdu = fits.open(filename)[0] #first from hdulist object
     
     #get parameters from hdr
@@ -49,9 +61,27 @@ def get_image_data(filename,order):
     return l,f
 
 def read_two_column(filename):
-    """
-    read a two column file containing spectra
-    the routine to write the header as a fits header was writen by Beth Klein
+    """Read a two column spectrum
+
+    Read a two column file in the 'lambda    flux' format as follows:
+        Header
+        ...
+        END
+           920.00003    6.58511E+09
+           920.00472    6.58510E+09
+           920.00942    6.58509E+09
+           920.01411    6.58507E+09
+           ...
+    pandas with the python regex parsing engine is used so that the read in is 'smart'
+    i.e. you don't have to worry about whitespace so long as the file is whitespace delimited.
+    This function also stores the fits header. That portion of the code was written by Beth Klein.
+
+    Args
+        filename (str): path to file containing data
+
+    Returns
+        args (2-tuple of type np.array): arguments of the Spec class
+        kwargs (dict): keyword arguments of the Spec class    
     """
     hdr = fits.header.Header()
     header = True
