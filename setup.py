@@ -1,4 +1,4 @@
- from setuptools import setup, find_packages
+from setuptools import setup, find_packages
 setup(
 name='spooky',
 version='1.0.0',
