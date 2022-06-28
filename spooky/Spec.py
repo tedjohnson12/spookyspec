@@ -259,8 +259,6 @@ class Spec:
         
         Returns:
             (Spec): spectrum with noise added
-        
-        If there is a certain maximum snr achievable on a certain instrument, then set that value to snr_max
         """
         f0 = interp1d(self.l,self.f)(l0)
         frac = self.f/f0
