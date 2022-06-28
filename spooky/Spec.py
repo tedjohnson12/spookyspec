@@ -97,8 +97,16 @@ class Spec:
             new_spec.u_f = u.Unit(kwargs['u_f'])
         return new_spec
     def quick_plot(self,w1,w2):
-        """
-        a quick view of the spectrum for informational purposes
+        """Plot a simple view
+
+        Show the spectrum in a simple non-interactive window. This is good to quickly check your work.
+
+        Args:
+            w1 (float): starting wavelength in units of `self.u_l`
+            w2 (float): ending wavelength in units of `self.u_l`
+
+        Returns:
+            None
         """
         plt.plot(*self.show(),c='k')
         # get y limit
@@ -111,8 +119,19 @@ class Spec:
         plt.ylabel(str(self.u_f))
         plt.show()
     def normalize(self,w1,w2,**kwargs):
-        """
-        Normalize a region of the spectrum. Great of comparing a model to uncalibrate echelle spectra.
+        """Normalize
+
+        Normalize a region of the spectrum. Great if comparing a model to uncalibrated echelle spectra.
+
+        Args:
+            w1 (float): starting wavelength to normalize in units of `self.u_l`
+            w2 (float): ending wavelength to normalize in units of `self.u_l`
+        
+        Keyword Args:
+            degree (int): degree of polynomial to fit
+
+        Returns:
+            (Spec): normalized spectrum
         """
         new_spec = deepcopy(self)
         continuum = self.continuum(w1,w2,**kwargs)
@@ -120,58 +139,126 @@ class Spec:
         new_spec.u_f = u.Unit('')
         return new_spec
     def continuum(self,w1,w2,**kwargs):
-        """
-        get a plynomial fit of the continuum
+        """Continuum
+        
+        Get a polynomial fit of the continuum.
+
+        Args:
+            w1 (float): starting wavelength to fit in units of `self.u_l`
+            w2 (float): ending wavelength to fit in units of `self.u_l`
+        
+        Keyword Args:
+            degree (int): degree of polynomial to fit
+
+        Returns:
+            (np.array): flux of the continuum. Shape is same as self.l
         """
         continuum = get_continuum(self.l,self.f,w1,w2, **kwargs) * self.u_f
         return continuum
     def dopshift(self,v):
-        """
-        float v in km/s
+        """Doppler Shift
+
+        Shift the spectrum by some radial velocity
+
+        Args:
+            v (float): velocity in km/s
+        
+        Returns:
+            (Spec): Doppler shifted spectrum
         """
         ckms = 299792.458 # c in km/s
         l = self.l * (1+(v/ckms))
-        f = self.f
-        return Spec(l,f,u_l = self.u_l,u_f = self.u_f)
+        new_spec = deepcopy(self)
+        new_spec.l = l
+        return new_spec
     def air(self):
-        """
-        convert spec from vacuum to air.
+        """Vacuum to Air
+        
+        Convert a spectrum from vacuum to air.
+
+        Args:
+            None
+
+        Returns:
+            (Spec): Converted spectrum
         """
         new_spec = deepcopy(self)
         new_spec.l = to_air(self.l*self.u_l).value
         return new_spec
     def smooth(self,shape):
-        """
-        smooth with boxcar of size shape
+        """Smooth
+        
+        Smooth with a boxcar function
+
+        Args:
+            shape (int): size of boxcar in pixels
+        
+        Returns:
+            (Spec): Smoothed spectrum
         """
         new_spec = deepcopy(self)
         new_spec.l = np.convolve(self.l,np.ones(shape)/shape,mode='same')
         return new_spec
     def ew(self,w1,w2,W1,W2,**kwargs):
-        """
-        get the equivalent width of a region of spectrum.
+        """Equivalent Width
+
+        Get the equivalent width of a region of spectrum.
+
+        Args:
+            w1 (float): starting wavelength of EW region in units of `self.u_l`
+            w2 (float): ending wavelength of EW region in units of `self.u_l`
+            W1 (float): starting wavelength of continuum region in units of `self.u_l`
+            W2 (float): ending wavelength of continuum region in units of `self.u_l`
+
+        Keyword Args:
+            plot (bool): whether or not to plot the line and region. Default `False`
+        
+        Returns:
+            (astropy.Quantity): Equivalent width of the region
+
         """
         ew = equivalent_width(self.l,self.f,self.continuum(W1,W2,**kwargs).value,w1,w2,self.u_l,**kwargs)
         #error = equivalent_width_error()
         
         return ew
-    def regions(self,*args):
+    def regions(self,*wavelengths):
+        """Select Regions
+
+        Choose regions of the spectrum to keep, discarding the rest.
+
+        Args:
+            wavelength (array-like of type astropy.Quantity): start-stop points for each region. Must have even length.
+
+        Returns:
+            (Spec): Spectrum containing only selected regions
         """
-        *args is a list of length quantities in top,start order. Purposes of removing bad regions from a spectrum.
-        """
-        if len(args) % 2 != 0:
+        if len(wavelengths) % 2 != 0:
             raise ValueError('Spec.regions must have an even number of arguments')
         x = self.l * self.u_l
-        n_regions = int(len(args)/2)
+        n_regions = int(len(wavelengths)/2)
         reg = np.zeros(len(x)).astype('bool')
         for i in range(n_regions):
-            reg = ((x >= args[2*i]) & (x <= args[2*i+1])) | (reg)
-        return Spec(self.l[reg],self.f[reg],u_l = self.u_l,u_f = self.u_f,stype = self.stype)
+            reg = ((x >= wavelengths[2*i]) & (x <= wavelengths[2*i+1])) | (reg)
+        return Spec(self.l[reg],self.f[reg],u_l = self.u_l,u_f = self.u_f,stype = self.stype,hdr=self.hdr)
     def set_snr(self,l0,snr0,thrux=None,thruy=None,snr_max=np.inf):
-        """
-        add noise to a spectrum to simulate an observation given SNR=snr0 and wavelenght l0
-        if instrument throughput is known, set thrux and thruy to arrays of throughput
-        this can easily be done for HST with the ETC
+        """Set SNR
+
+        Add noise to the spectrum to simulate an observation. The signal-to-noise ratio (SNR) is set at a reference wavelength and from there
+        scales with the square root of the flux according to Poisson satistics.
+        Optionally, a description of the instrument throughput can be given and applied to the SNR calculation.
+        This is best when used in conjunction with an exposure time calculator.
+
+        Args:
+            l0 (float): wavelength of the reference SNR in units of `self.u_l`
+            snr0 (float): reference SNR in SNR per pixel. For SNR per resolution element, smooth first (e.g. self.smooth(5) for COS)
+        
+        Keyword Args:
+            thrux (np.array): wavelength values of throughput data in `self.u_l`. Default `None`
+            thruy (np.array): thoughput at each wavelength point in `thrux`. Only the relative value is important.
+            snr_max (float): the maximum SNR achievable with this instrument. e.g. for COS use 45
+        
+        Returns:
+            (Spec): spectrum with noise added
         
         If there is a certain maximum snr achievable on a certain instrument, then set that value to snr_max
         """
