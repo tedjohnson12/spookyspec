@@ -273,8 +273,16 @@ class Spec:
         new_spec.f = new_spec.f + noise
         return new_spec
     def fnu(self):
-        """
-        convert to fnu
+        """Fnu
+
+        Convert from Flambda to Fnu.
+        This function should not allow a spectrum that is already in Fnu to be converted.
+
+        Args:
+            None
+
+        Returns:
+            (Spec): new spectrum in Fnu
         """
         l,f = self.show()
         fnu = (f * l**2 / const.c).to(u.mJy)
@@ -283,15 +291,29 @@ class Spec:
         new_spec.u_f = fnu.unit
         return new_spec
     def yoffset(self,dy):
-        """
-        add a linear offset to the spectra. For plotting only. This does not preserve equivalent width
+        """y-offset
+
+        Add a constant offset to the spectra. For plotting only. This does not preserve equivalent width.
+
+        Args:
+            dy (float): constant to be added to the flux in units of `self.u_f`
+
+        Returns:
+            (Spec): new spectrum with offset applied
         """
         new_spec = deepcopy(self)
         new_spec.f = new_spec.f + dy
         return new_spec
     def resample(self,lnew):
-        """
-        resample the flux at new wavelengths
+        """Resample
+        
+        Resample the flux at new wavelengths using `scipy.interp1d`
+
+        Args:
+            lnew(np.array): new wavelength values to sample at in units of `self.u_l`
+        
+        Returns:
+            (Spec): new resampled spectrum
         """
         new_spec = deepcopy(self)
         func = interp1d(self.l,self.f,bounds_error=False,fill_value=np.nan)
@@ -299,8 +321,15 @@ class Spec:
         new_spec.f = func(lnew)
         return new_spec
     def combine(self,*others):
-        """
-        combine multiple Spec objects to increase snr
+        """Combine
+
+        Combine multiple Spec objects to increase snr in a wavelength range that they share
+
+        Args:
+            others (list of type Spec): Spec objects to be combined with `self`
+
+        Returns:
+            (Spec): new combined spectrum
         """
         new_spec = deepcopy(self)
         n_points = np.ones(len(new_spec.l))
@@ -312,10 +341,20 @@ class Spec:
         new_spec.f = new_spec.f/n_points
         return new_spec
     def gauss(self,R=None,sigma=None):
-        """
-        convolve to instrument resolutuion with gaussian
-        may have to convert to evenly spaced x axis for this to work
+        """Gauss
+        Convolve to instrument resolutuion with gaussian.
+        May have to convert to evenly spaced x axis for this to work
         not implemented yet
+
+        Args:
+            None
+    
+        Keyword Args:
+            R (float): Resolving power of convolution.
+            sigma (float): resolution of convolution in units of `self.u_l`
+        
+        Returns:
+            None -- Raises NotImplementedError
         """
         raise NotImplementedError
         if (R==None) and (sigma==None):
