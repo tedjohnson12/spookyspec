@@ -1,16 +1,33 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from astropy import constants as const
 
 def redshift(l,v):
-    """
-    get the doppler shifted wavelength from l of an object moving away from the observer at speed v
+    """Redshift
+
+    Get the doppler shifted wavelength of a line given the linecenter
+    wavelength and radial velocity
+
+    Args:
+        l (astropy.Quantity): wavelength to be shifted
+        v (astropy.Quantity): radial velocity
+    
+    Returns:
+        (astropy.Quantity): red/blue shifted wavelength
     """
     dl = v*l/const.c
     return l+dl
 
 def to_air(vac):
-    """
-    convert from vacuum to air wavelengths
+    """To air
+    
+    Convert from vacuum to air wavelengths
+
+    Args:
+        vac (astropy.Quantity): wavelength(s) to be shifted
+
+    Returns:
+        (astropy.Quantity): wavelength(s) in air
     """
     s = 1e4 / (vac)
     n = (1 + 0.0000834254)/(s.unit ** 2) + 0.02406147 / (130*(s.unit ** 2) - s**2) + 0.00015998 / (38.9*(s.unit ** 2) - s**2)
@@ -20,8 +37,16 @@ def to_air(vac):
 
 
 def poly_x(x, coeffs):
-    """
-    given array x, find polynomial y given coefficients given in the form of np.polyfit
+    """Polynomial
+
+    Transform an array of x values given coefficients of a polynomial function
+
+    Args:
+        x (np.array): values to be transformed
+        coeffs (array-like): coefficents of the polynomical function starting with the highest order
+
+    Returns:
+        (np.array): y values of the polynomial function
     """
     y = x*0
     l = len(coeffs)
@@ -30,14 +55,31 @@ def poly_x(x, coeffs):
     return y
 
 def ddx(x,y):
-    """
-    derivitive
+    """Derivative
+
+    Numerical derivitive with `np.gradient`
+    
+    Args:
+        x (array-like): x values
+        y (array-like): y values
+    
+    Returns:
+        (np.array): x values
+        (np.array): derivative of `x` and `y`
     """
     return x, np.gradient(y,x,edge_order=2)
 
 def trap_rule(x,f):
-    """
+    """Trapazoid rule
+
     Integrate using Trapizoid rule.
+
+    Args:
+        x (array-like): x values to integrate over
+        f (array-like): y values to integrate over
+
+    Returns:
+        (float) integral of f over the domain of x
     """
     total = 0
     for i in range(0,len(x)-1):
@@ -45,9 +87,21 @@ def trap_rule(x,f):
     return total
 
 def reject(x,y,**kwargs):
-    """
-    rejection procedure for finding continuum
+    """Reject
+    Rejection procedure for finding the continuum of a spectrum
     works best if y has some noise
+
+    Args:
+        x (np.array): wavelength values of the spectrum
+        y (np.array): flux values of the spectrum
+    
+    Keyword Args:
+        pct (float in range [0,1]): residual cutoff percentile. Default `0.85`
+        box (int): radius of surrounding points to check. Default `5`
+        degree (int): fitting degree. Default `1`
+    
+    Returns:
+        (np.array of bool): points that part of the spectral continuum
     """
     pct = kwargs.get('pct',0.85)
     box = kwargs.get('box',5)
@@ -78,8 +132,23 @@ def reject(x,y,**kwargs):
 
 
 def get_continuum_points(x,y,**kwargs):
-    """
-    get a boolean array indicating which points are part of the continuum
+    """Get continuum points
+    
+    Get a boolean array indicating which points are part of the continuum
+    
+    Args:
+        x (np.array): wavelength values of the spectrum
+        y (np.array): flux values of the spectrum
+    
+    Keyword Args:
+        pct (float in range [0,1]): residual cutoff percentile. Default `0.85`
+        box (int): radius of surrounding points to check. Default `5`
+        degree (int): fitting degree. Default `1`
+        cutoff (float): second derivitive cutoff for fitting a model continuum. Default 1e-12
+        stype (str): `data` or `model`. Type of spectrum to fit continuum. Default `data`
+
+    Returns:
+        (np.array of bool): points that part of the spectral continuum
     """
     cutoff = kwargs.get('cutoff',1e-12)
     stype = kwargs.get('stype','data')
@@ -94,7 +163,12 @@ def get_continuum_points(x,y,**kwargs):
         return is_cont
     
 def get_continuum(x,y,w1,w2,**kwargs):
-    """
+    """Get continuum
+
+    Fit the continuum of a spectrum
+
+    Args:
+        x
     fit a polynomial f to the continuum and return the array f(x) between the wavelengths w1,w2
     """
     degree = kwargs.get('degree',1)
