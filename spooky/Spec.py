@@ -77,7 +77,7 @@ class Spec:
         new_spec = deepcopy(self)
         new_spec.f = self.f * k
         return new_spec
-    def new_units(**kwargs):
+    def new_units(self,**kwargs):
         """Change unit keyword
         Change the units stored in `self.u_l` and/or `self.u_f`. Does not change the arrays that store data.
         This is for fixing mistakes and other data management actions. To cast your data to another unit,
@@ -393,7 +393,7 @@ class MultiSpec:
         new_spec = deepcopy(self)
         new_spec.fs = self.fs * k
         return new_spec
-    def new_units(**kwargs):
+    def new_units(self,**kwargs):
         new_spec = deepcopy(self)
         if 'u_l' in kwargs:
             new_spec.u_l = u.Unit(kwargs['u_l'])
@@ -429,7 +429,7 @@ class MultiSpec:
         new_spec.ls = self.ls * (1+(v/ckms))
         new_spec.fs = self.fs
         #new_spec.hdr['dopshift'] = v
-        return newspec
+        return new_spec
     def air(self):
         new_spec = deepcopy(self)
         new_spec.ls = to_air(self.ls * self.u_l).value
