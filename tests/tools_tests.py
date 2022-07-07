@@ -32,7 +32,7 @@ def test_redshift():
 def test_to_air():
     """Test to_air
     
-    Unit tests for the tools.to_air(function)
+    Unit tests for the tools.to_air() function
 
     Args:
         None
@@ -46,3 +46,64 @@ def test_to_air():
     #array
     assert isinstance(tools.to_air(np.array([4000,4100])*u.AA),u.quantity.Quantity)
 
+def test_poly_x():
+    """Test poly_x
+    
+    Unit tests for the tools.poly_x() function
+
+    Args:
+        None
+    
+    Returns:
+        None
+    """
+    #zero
+    assert tools.poly_x(1,[0]) == 0
+
+    #quadratic
+    x = np.linspace(-10,10,21)
+    assert (tools.poly_x(x,[2,1,0]) == 2*x**2 + x).all()
+
+def test_ddx():
+    """Test ddx
+
+    Unit tests for the tools.ddx() function
+
+    Args:
+        None
+    
+    Returns:
+        None
+    """
+    #quadratic
+    x = np.linspace(-10,10,21)
+    y = tools.poly_x(x,[1,0,0])
+    assert (tools.ddx(x,y)[1] == pytest.approx(tools.poly_x(x,[2,0]),abs=1e-3)).all()
+
+    #sine
+    x = np.linspace(-10,10,2001)
+    y = np.sin(x)
+    yy = dydx(x,y)[1]
+    dydx = np.cos(x)
+    assert (yy == pytest.approx(dydx,abs=1e-3)).all()
+
+def test_trap_rule():
+    """Test trap_rule
+
+    Unit tests for the tools.trap_rule() function
+
+    Args:
+        None
+    
+    Returns:
+        None
+    """
+    #sine
+    x = np.linspace(0,2*np.pi,10):
+    y = np.sin(x)
+    assert 0 == pytest.approx(tools.trap_rule(x,y),abs=1e-6)
+
+    #quadratic
+    x = np.linspace(0,4,11)
+    y = sp.tools.poly_x(x,[2,0])
+    assert 16 == pytest.approx(sp.tools.trap_rule(x,y),abs=1e-6)
