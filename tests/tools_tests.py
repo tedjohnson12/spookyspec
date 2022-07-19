@@ -1,5 +1,6 @@
 import pytest
 from astropy import units as u,constants as c
+import numpy as np
 
 from spooky import tools
 
@@ -27,7 +28,7 @@ def test_redshift():
 
     # array
     l = np.array(1100,1200)*u.AA
-    assert (l == tools.redshift(l,0*u.km/s)).all()
+    assert (l == tools.redshift(l,0*u.km/u.s)).all()
 
 def test_to_air():
     """Test to_air
@@ -99,11 +100,28 @@ def test_trap_rule():
         None
     """
     #sine
-    x = np.linspace(0,2*np.pi,10):
+    x = np.linspace(0,2*np.pi,10)
     y = np.sin(x)
     assert 0 == pytest.approx(tools.trap_rule(x,y),abs=1e-6)
 
     #quadratic
     x = np.linspace(0,4,11)
-    y = sp.tools.poly_x(x,[2,0])
-    assert 16 == pytest.approx(sp.tools.trap_rule(x,y),abs=1e-6)
+    y = tools.poly_x(x,[2,0])
+    assert 16 == pytest.approx(tools.trap_rule(x,y),abs=1e-6)
+
+def test_reject():
+    """Test reject
+    
+    Unit test for the tools.reject() function
+
+    Args:
+        None
+    
+    Returns:
+        None
+    """
+    N=1001
+    x = np.linspace(0,100,N)
+    y = np.random.normal(scale=1,size=N)
+    is_cont = tools.reject(x,y,pct=0.95)
+    assert is_cont.sum() == pytest.approx(N*0.95,abs=10)
