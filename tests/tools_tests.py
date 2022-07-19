@@ -107,9 +107,6 @@ def test_trap_rule():
     #quadratic
     x = np.linspace(0,4,11)
     y = tools.poly_x(x,[2,0])
-<<<<<<< HEAD
-    assert 16 == pytest.approx(tools.trap_rule(x,y),abs=1e-6)
-=======
     assert 16 == pytest.approx(tools.trap_rule(x,y),abs=1e-6)
 
 def test_reject():
@@ -119,13 +116,5 @@ def test_reject():
 
     Args:
         None
+
     
-    Returns:
-        None
-    """
-    N=1001
-    x = np.linspace(0,100,N)
-    y = np.random.normal(scale=1,size=N)
-    is_cont = tools.reject(x,y,pct=0.95)
-    assert is_cont.sum() == pytest.approx(N*0.95,abs=10)
->>>>>>> 9acfa54b2fbbbdbe1a3ae8a0a26c504a34332032
