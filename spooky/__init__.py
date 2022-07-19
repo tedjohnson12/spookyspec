@@ -4,7 +4,6 @@ from spooky.fits import fits_to_np
 from spooky.fits import read_two_column
 from spooky.fits import get_image_data
 from spooky.Spec import Spec
-from spooky.Spec import MultiSpec
 from spooky.Spec import readfits
 from spooky.Spec import read
 from spooky.tools import redshift
