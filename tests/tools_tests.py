@@ -108,13 +108,3 @@ def test_trap_rule():
     x = np.linspace(0,4,11)
     y = tools.poly_x(x,[2,0])
     assert 16 == pytest.approx(tools.trap_rule(x,y),abs=1e-6)
-
-def test_reject():
-    """Test reject
-    
-    Unit test for the tools.reject() function
-
-    Args:
-        None
-
-    
