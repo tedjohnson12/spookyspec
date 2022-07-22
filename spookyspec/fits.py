@@ -5,6 +5,7 @@ from astropy import units as u
 
 def fits_to_np(spec):
     """Convert from fits to numpy
+
     Convert a file from fits format to two numpy arrays.
     
     Args:
@@ -64,16 +65,7 @@ def get_image_data(filename,order):
 def read_two_column(filename):
     """Read a two column spectrum
 
-    Read a two column file in the 'lambda    flux' format as follows:
-        Header
-        ...
-        END
-           920.00003    6.58511E+09
-           920.00472    6.58510E+09
-           920.00942    6.58509E+09
-           920.01411    6.58507E+09
-           ...
-    pandas with the python regex parsing engine is used so that the read in is 'smart'
+    Read a two column file. pandas with the python regex parsing engine is used so that the read in is 'smart'
     i.e. you don't have to worry about whitespace so long as the file is whitespace delimited.
     This function also stores the fits header. That portion of the code was written by Beth Klein.
 
@@ -83,6 +75,18 @@ def read_two_column(filename):
     Returns
         args (2-tuple of type np.array): arguments of the Spec class
         kwargs (dict): keyword arguments of the Spec class    
+    
+    Example
+        Use the `lambda    flux` format as follows::
+
+            Header
+            ...
+            END
+            920.00003    6.58511E+09
+            920.00472    6.58510E+09
+            920.00942    6.58509E+09
+            920.01411    6.58507E+09
+            ...
     """
     hdr = fits.header.Header()
     header = True
