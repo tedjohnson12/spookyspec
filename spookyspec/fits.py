@@ -141,9 +141,10 @@ def read_psg(filename,col):
             elif 'Radiance unit:' in line:
                 u_f = line.replace(']','[').split('[')[1]
             elif 'Wave/freq' in line:
-                names = line[2:].split(' ')
+                names = line[2:-1].split(' ')
     df = read_csv(filename,sep = ' +', engine='python',comment='#',names = names)
-    if u_l == 'ppm':
-        u_l = ''
+    if u_f == 'ppm':
+        u_f = ''
     args = (np.array(df['Wave/freq']),np.array(df[col]))
     kwargs = {'stype':'model','u_l' : u.Unit(u_l),'u_f' : u.Unit(u_f),'hdr' : None}
+    return args,kwargs
