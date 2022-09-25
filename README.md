@@ -7,3 +7,7 @@
 A python package to plot, analyze, and manipulate one-dimensional spectra.
 
 See our [documentation](https://spookyspec.readthedocs.io/en/latest/)
+
+#### Installation:
+
+`pip install spookyspec`
