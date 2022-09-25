@@ -145,5 +145,5 @@ def read_psg(filename,col):
     df = read_csv(filename,sep = ' +', engine='python',comment='#',names = names)
     if u_l == 'ppm':
         u_l = ''
-    args = (np.array(df['Wave/freq']),np.array(df['col']))
+    args = (np.array(df['Wave/freq']),np.array(df[col]))
     kwargs = {'stype':'model','u_l' : u.Unit(u_l),'u_f' : u.Unit(u_f),'hdr' : None}

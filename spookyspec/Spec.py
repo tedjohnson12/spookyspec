@@ -4,9 +4,10 @@ import astropy.units as u
 import astropy.constants as const
 from copy import deepcopy
 import matplotlib.pyplot as plt
-from .tools import get_continuum, equivalent_width, to_air#,equivalent_width_error
-from .fits import fits_to_np
-from .fits import read_two_column
+from spookyspec.tools import get_continuum, equivalent_width, to_air#,equivalent_width_error
+from spookyspec.fits import fits_to_np
+from spookyspec.fits import read_two_column
+from spookyspec.fits import read_psg
 from scipy.interpolate import interp1d
 
 class Spec:
@@ -401,6 +402,7 @@ def read(filename,**kwargs):
         u_f (str): unit of flux axis. Should be readable by astropy.units.Unit(). Default `'erg cm-2 s-1 Angstrom-1'`
         stype (str): type of information stored. Either `'data'` or `'model'`. This is important for finding the continuum
         and normalization. Default `'data'`
+        col (str): column of psg file to read. Default `'Total'`
     
     Returns:
         (Spec): Spectrum contained in fits file
@@ -409,6 +411,9 @@ def read(filename,**kwargs):
         name,ext = filename.split('.')
         if (ext.lower()=='fits') or (ext.lower()=='fit'):
             return readfits(filename,**kwargs)
+        elif ('rad' in filename) or ('psg' in filename):
+            a,k = read_psg(filename,kwargs.get('col','Total'))
+            return Spec(*a,**k)
         else:
             a,k = read_two_column(filename)
             return Spec(*a,**k)
