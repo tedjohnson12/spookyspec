@@ -120,3 +120,30 @@ def read_two_column(filename):
     args = (np.array(df['lam']),np.array(df['flux']))
     kwargs = {'stype':'model','u_l' : u.Unit(hdr['UNIT1']),'u_f' : u.Unit(hdr['UNIT2']),'hdr' : hdr}
     return args,kwargs
+
+
+def read_psg(filename,col):
+    """ Read PSG-style output
+
+    Read a spectrum output from the Planetary Spectrum Generator (psg.gsfc.nasa.gov)
+
+    Args:
+        filename (str): path to the file containing the data
+        col (str): column the rad file to read
+    """
+    u_l = ''
+    u_f = ''
+    names = []
+    with open(filename,'r') as file:
+        for line in file:
+            if 'Spectral unit:' in line:
+                u_l = line.replace(']','[').split('[')[1]
+            elif 'Radiance unit:' in line:
+                u_f = line.replace(']','[').split('[')[1]
+            elif 'Wave/freq' in line:
+                names = line[2:].split(' ')
+    df = read_csv(filename,sep = ' +', engine='python',comment='#',names = names)
+    if u_l == 'ppm':
+        u_l = ''
+    args = (np.array(df['Wave/freq']),np.array(df['col']))
+    kwargs = {'stype':'model','u_l' : u.Unit(u_l),'u_f' : u.Unit(u_f),'hdr' : None}
