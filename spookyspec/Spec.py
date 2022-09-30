@@ -411,7 +411,7 @@ def read(filename,**kwargs):
         name,ext = filename.split('.')
         if (ext.lower()=='fits') or (ext.lower()=='fit'):
             return readfits(filename,**kwargs)
-        elif ('rad' in filename) or ('psg' in filename):
+        elif ('rad' in filename.lower()) or ('psg' in filename.lower()):
             a,k = read_psg(filename,kwargs.get('col','Total'))
             return Spec(*a,**k)
         else:
