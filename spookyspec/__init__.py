@@ -2,6 +2,7 @@ __version__ = '1.0.0'
 
 from spookyspec.fits import fits_to_np
 from spookyspec.fits import read_two_column
+from spookyspec.fits import read_psg
 from spookyspec.fits import get_image_data
 from spookyspec.Spec import Spec
 from spookyspec.Spec import readfits
