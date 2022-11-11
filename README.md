@@ -5,7 +5,7 @@
 
 # spookyspec
 
-### So simple it's scary
+### Hauntingly simple
 
 A python package to plot, analyze, and manipulate one-dimensional spectra.
 
