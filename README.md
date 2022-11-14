@@ -131,14 +131,12 @@ siiv = simCOS.add_subplot(gs[3, :2])
 viridis = cm.get_cmap('viridis', 3)
 
 alii.plot(*halley.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(-1e-14).scale(1e14).show(),c=viridis(0),label='Simulated Comet Halley Abundances')
-# alii.plot(*e9.fnu().show(),c='xkcd:azure',label='Comet Halley Model')
 alii.plot(*earth.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(0).scale(1e14).show(),c=viridis(1),label='Bulk Earth Model')
 alii.plot(*rad_lev.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(1e-14).scale(1e14).show(),c=viridis(2),label='Radiative Levitation Model')
 w=1352.810
 dw=2
 alii.set_xlim(w-dw,w+dw)
 alii.set_ylim(1.1,4.2)
-# alii.legend(loc=(1.1,0.3),prop={'size':16,'family':'serif'})
 line_label(alii,w,'Al III')
 alii.tick_params(which='major', length=5, width=1, direction='in',labelsize=16)
 alii.set_xticks([1351,1352,1353,1354])
@@ -146,7 +144,6 @@ alii.set_yticks([2,3,4])
 alii.yaxis.offsetText.set_fontsize(16)
 
 
-# ciii.plot(*e9.fnu().show(),c='xkcd:azure',label='Comet Halley Model')
 
 ciii.plot(*rad_lev.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(0.5e-14).scale(1e14).show(),c=viridis(2),label='No Accretion')
 ciii.plot(*earth.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).scale(1e14).show(),c=viridis(1),label='Refractory Rich Accretion')
@@ -162,7 +159,6 @@ ciii.tick_params(which='major', length=5, width=1, direction='in',labelsize=16)
 ciii.yaxis.offsetText.set_fontsize(16)
 
 feii.plot(*halley.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(-1.3e-14).scale(1e14).show(),c=viridis(0),label='Simulated Comet Halley Abundances')
-# feii.plot(*e9.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).show(),c='xkcd:azure',label='Comet Halley Model')
 feii.plot(*earth.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).scale(1e14).show(),c=viridis(1),label='Bulk Earth Model')
 feii.plot(*rad_lev.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(1.3e-14).scale(1e14).show(),c=viridis(2),label='Radiative Levitation Model')
 w=1122.526
@@ -174,14 +170,12 @@ feii.tick_params(which='major', length=5, width=1, direction='in',labelsize=16)
 feii.yaxis.offsetText.set_fontsize(16)
 
 nii.plot(*halley.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(-3e-14).scale(1e14).show(),c=viridis(0),label='Simulated Comet Halley Abundances')
-# nii.plot(*e9.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).show(),c='xkcd:azure',label='Comet Halley Model')
 nii.plot(*earth.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(0e-14).scale(1e14).show(),c=viridis(1),label='Bulk Earth Model')
 nii.plot(*rad_lev.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(3e-14).scale(1e14).show(),c=viridis(2),label='Radiative Levitation Model')
 w=1084.5
 dw=2
 nii.set_xlim(w-dw,w+dw)
 nii.set_ylim(-0.9,12)
-# line_label(nii,1082.838,'Fe III',offset=-0.05)
 line_label(nii,1083.216,'Si III')
 line_label(nii,1083.990,'N II')
 line_label(nii,1084.570,'N II')
@@ -192,7 +186,6 @@ nii.set_xticks([1083,1084,1085,1086])
 nii.yaxis.offsetText.set_fontsize(16)
 
 sii.plot(*halley.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(-1e-14).scale(1e14).show(),c=viridis(0),label='Simulated Comet Halley Abundances')
-# sii.plot(*e9.fnu().show(),c='xkcd:azure',label='Comet Halley Model')
 sii.plot(*earth.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).scale(1e14).show(),c=viridis(1),label='Bulk Earth Model')
 sii.plot(*rad_lev.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(1e-14).scale(1e14).show(),c=viridis(2),label='Radiative Levitation Model')
 w=(1200.956+1201.722)*0.5
@@ -206,7 +199,6 @@ sii.set_xticks([1200,1201,1202,1203])
 sii.yaxis.offsetText.set_fontsize(16)
 
 siiii.plot(*halley.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(-3e-14).scale(1e14).show(),c=viridis(0),label='Simulated Comet Halley Abundances')
-# siiii.plot(*e9.fnu().show(),c='xkcd:azure',label='Comet Halley Model')
 siiii.plot(*earth.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(0e-14).scale(1e14).show(),c=viridis(1),label='Bulk Earth Model')
 siiii.plot(*rad_lev.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(3e-14).scale(1e14).show(),c=viridis(2),label='Radiative Levitation Model')
 w=1111
@@ -220,7 +212,6 @@ siiii.tick_params(which='major', length=5, width=1, direction='in',labelsize=16)
 siiii.yaxis.offsetText.set_fontsize(16)
 
 siiv.plot(*halley.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(-3e-14).scale(1e14).show(),c=viridis(0),label='Simulated Comet Halley Abundances')
-# siiv.plot(*e9.fnu().show(),c='xkcd:azure',label='Comet Halley Model')
 siiv.plot(*earth.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(0e-14).scale(1e14).show(),c=viridis(1),label='Bulk Earth Model')
 siiv.plot(*rad_lev.set_snr(1090,19,thrux = df['wavelength'],thruy = df['target_counts'],snr_max=45).yoffset(3e-14).scale(1e14).show(),c=viridis(2),label='Radiative Levitation Model')
 w=1128.340
