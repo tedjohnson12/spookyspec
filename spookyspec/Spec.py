@@ -321,6 +321,16 @@ class Spec:
         new_spec.l = lnew
         new_spec.f = func(lnew)
         return new_spec
+    def bandpass(self,w1=None,w2=None,func=None):
+        if not func is None:
+            return func(self)
+        elif not ((w1 is None) or (w2 is None)):
+            if w2<=w1:
+                raise ValueError('Long wavelength bound (`w2`) must be strinctly larger than short bound (`w1`)')
+            return np.mean(self.regions(w1,w2).f)*self.u_f
+        else:
+            raise ValueError('Must specify some kind of bandpass')
+
     def combine(self,*others):
         """Combine
 
